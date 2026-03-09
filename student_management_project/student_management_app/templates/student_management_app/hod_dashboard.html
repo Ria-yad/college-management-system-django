@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}HOD Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>HOD Dashboard</h2>
+    <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}. Manage your college ERP.</p>
+</div>
+<div class="stat-grid">
+    <div class="stat-card"><h3>Total Students</h3><p>{{ total_students|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Staff</h3><p>{{ total_staff|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Courses</h3><p>{{ total_courses|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Attendance</h3><p>{{ total_attendance|default:0 }}</p></div>
+</div>
+<div class="card">
+    <h3>Quick Actions</h3>
+    <p>
+        <a class="btn btn-primary" href="{% url 'add_staff' %}">Add Staff</a>
+        <a class="btn btn-success" href="{% url 'list_staff' %}">Staff List</a>
+        <a class="btn btn-primary" href="{% url 'admin_view_attendance' %}">Attendance</a>
+        <a class="btn btn-warning" href="{% url 'admin_student_leave_view' %}">Student Leave</a>
+        <a class="btn btn-warning" href="{% url 'admin_staff_leave_view' %}">Staff Leave</a>
+        <a class="btn btn-primary" href="{% url 'hod_student_feedback_list' %}">Student Feedback</a>
+        <a class="btn btn-primary" href="{% url 'hod_staff_feedback_list' %}">Staff Feedback</a>
+    </p>
+</div>
+{% endblock %}

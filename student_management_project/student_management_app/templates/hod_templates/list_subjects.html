@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Subject List{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Subject Management</h2><p>Manage all subjects.</p></div>
+<div class="card table-wrap">
+    <p><a class="btn btn-primary" href="{% url 'hod_add_subject' %}">Add New Subject</a></p>
+    <table class="erp-table">
+        <thead>
+            <tr><th>ID</th><th>Subject Name</th><th>Course</th><th>Staff</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for subject in subjects %}
+            <tr>
+                <td>{{ subject.id }}</td>
+                <td>{{ subject.subject_name }}</td>
+                <td>{{ subject.course_id.course_name }}</td>
+                <td>{{ subject.staff_id.admin.get_full_name|default:subject.staff_id.admin.username }}</td>
+                <td>
+                    <a class="btn btn-success" href="{% url 'hod_edit_subject' subject.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'hod_delete_subject' subject.id %}" onclick="return confirm('Delete this subject?');">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5">No subjects found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

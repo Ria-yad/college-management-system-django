@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Student Feedback List{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Student Feedback</h2><p>Review and respond to student feedback.</p></div>
+<div class="card table-wrap">
+<table class="erp-table"><tr><th>Student</th><th>Feedback</th><th>Reply</th><th>Date</th><th>Action</th></tr>
+{% for row in feedback_data %}
+<tr>
+<td>{{ row.student_id.admin.get_full_name|default:row.student_id.admin.username }}</td>
+<td>{{ row.feedback }}</td>
+<td>{% if row.feedback_reply %}{{ row.feedback_reply }}{% else %}<span class="badge badge-pending">Pending reply</span>{% endif %}</td>
+<td>{{ row.created_at }}</td>
+<td><form method="post" action="{% url 'hod_student_feedback_reply' %}" class="form-grid" style="grid-template-columns:1fr auto;">{% csrf_token %}<input type="hidden" name="feedback_id" value="{{ row.id }}"><input type="text" name="reply_text" placeholder="Type reply" required><button class="btn btn-primary" type="submit">Reply</button></form></td>
+</tr>
+{% empty %}<tr><td colspan="5">No student feedback found.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

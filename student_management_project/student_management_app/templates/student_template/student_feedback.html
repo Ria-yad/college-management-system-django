@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Student Feedback{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Feedback Center</h2><p>Share your feedback and track replies.</p></div>
+{% if messages %}{% for message in messages %}<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">{{ message }}</div>{% endfor %}{% endif %}
+<div class="card">
+<form method="post" action="{% url 'student_feedback_save' %}" class="form-grid">
+{% csrf_token %}
+<div class="form-group"><label for="feedback_message">Feedback Message</label><textarea id="feedback_message" name="feedback_message" rows="4" required></textarea></div>
+<button class="btn btn-primary" type="submit">Send Feedback</button>
+</form>
+</div>
+<div class="card table-wrap"><table class="erp-table"><tr><th>Date</th><th>Feedback</th><th>Reply</th></tr>{% for row in feedback_data %}<tr><td>{{ row.created_at }}</td><td>{{ row.feedback }}</td><td>{% if row.feedback_reply %}{{ row.feedback_reply }}{% else %}<span class="badge badge-pending">Pending reply</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="3">No feedback sent yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

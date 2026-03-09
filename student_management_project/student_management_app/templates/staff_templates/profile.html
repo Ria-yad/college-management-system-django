@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Staff Profile{% endblock %}
+{% block content %}
+<div class="page-header"><h2>My Profile</h2><p>View your personal details.</p></div>
+{% if messages %}{% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}{% endif %}
+<div class="card table-wrap">
+<table class="erp-table">
+<tr><th>Username</th><td>{{ request.user.username }}</td></tr>
+<tr><th>Email</th><td>{{ request.user.email }}</td></tr>
+<tr><th>First Name</th><td>{{ request.user.first_name }}</td></tr>
+<tr><th>Last Name</th><td>{{ request.user.last_name }}</td></tr>
+<tr><th>Address</th><td>{% if staff %}{{ staff.address }}{% else %}Not set{% endif %}</td></tr>
+<tr><th>Gender</th><td>{% if staff and staff.gender %}{{ staff.gender }}{% else %}Not set{% endif %}</td></tr>
+</table>
+</div>
+{% endblock %}

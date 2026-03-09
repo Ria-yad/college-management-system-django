@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Student Attendance{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Attendance Report</h2><p>Filter attendance by subject and date range.</p></div>
+{% if messages %}{% for message in messages %}<div class="alert alert-error">{{ message }}</div>{% endfor %}{% endif %}
+<div class="card">
+{% if student %}
+<form method="post" action="{% url 'student_view_attendance_post' %}" class="form-grid" style="grid-template-columns:repeat(4,minmax(140px,1fr));">
+{% csrf_token %}
+<div class="form-group"><label for="subject">Subject</label><select id="subject" name="subject" required><option value="">Select Subject</option>{% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.subject_name }}</option>{% endfor %}</select></div>
+<div class="form-group"><label for="start_date">Start Date</label><input type="date" id="start_date" name="start_date" required></div>
+<div class="form-group"><label for="end_date">End Date</label><input type="date" id="end_date" name="end_date" required></div>
+<div class="form-group" style="align-self:end;"><button class="btn btn-primary" type="submit">View Report</button></div>
+</form>
+{% else %}<p>Student profile is not configured.</p>{% endif %}
+</div>
+{% endblock %}

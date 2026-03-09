@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Staff Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Staff Dashboard</h2>
+    <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}. Stay on top of your classes.</p>
+</div>
+<div class="stat-grid">
+    <div class="stat-card"><h3>Total Students</h3><p>{{ total_students|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Staff</h3><p>{{ total_staff|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Courses</h3><p>{{ total_courses|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Attendance</h3><p>{{ total_attendance_marked|default:0 }}</p></div>
+</div>
+<div class="card">
+    <h3>Quick Actions</h3>
+    <p>
+        <a class="btn btn-primary" href="{% url 'staff_profile' %}">My Profile</a>
+        <a class="btn btn-primary" href="{% url 'staff_profile_update' %}">Update Profile</a>
+        <a class="btn btn-success" href="{% url 'staff_take_attendance' %}">Take Attendance</a>
+        <a class="btn btn-warning" href="{% url 'staff_update_attendance' %}">Update Attendance</a>
+        <a class="btn btn-primary" href="{% url 'staff_apply_leave' %}">Apply Leave</a>
+        <a class="btn btn-primary" href="{% url 'staff_leave_view' %}">Leave Status</a>
+        <a class="btn btn-primary" href="{% url 'staff_feedback' %}">Feedback</a>
+    </p>
+</div>
+{% endblock %}

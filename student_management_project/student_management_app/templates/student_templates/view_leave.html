@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Student Leave History{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Leave History</h2><p>View all submitted leave requests and status.</p></div>
+<div class="card table-wrap">
+<table class="erp-table"><tr><th>Leave Date</th><th>Message</th><th>Status</th></tr>
+{% for leave in leave_data %}<tr><td>{{ leave.leave_date }}</td><td>{{ leave.leave_message }}</td><td>{% if leave.leave_status == 0 %}<span class="badge badge-pending">Pending</span>{% elif leave.leave_status == 1 %}<span class="badge badge-approved">Approved</span>{% else %}<span class="badge badge-rejected">Rejected</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="3">No leave requests found.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

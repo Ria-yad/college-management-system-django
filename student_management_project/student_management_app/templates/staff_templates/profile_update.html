@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Update Staff Profile{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Update Profile</h2><p>Keep your profile information up to date.</p></div>
+<div class="card">
+<form method="post" class="form-grid">
+{% csrf_token %}
+{% for field in form %}<div class="form-group">{{ field.label_tag }}{{ field }}</div>{% endfor %}
+<button class="btn btn-primary" type="submit">Save Changes</button>
+</form>
+</div>
+{% endblock %}

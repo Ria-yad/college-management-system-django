@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Add Student{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Add Student</h2><p>Create a new student account and profile.</p></div>
+<div class="card">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}<small class="alert alert-error">{{ field.errors|striptags }}</small>{% endif %}
+            </div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Create Student</button>
+    </form>
+</div>
+{% endblock %}

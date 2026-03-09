@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}College Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="logo">CM</div>
+            <div>
+                <h1>College Management System</h1>
+                <p>Modern ERP Panel</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button class="menu-toggle btn btn-primary" id="menuToggle" type="button" aria-controls="sidebar" aria-expanded="false">Menu</button>
+            <span class="user-chip">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="btn btn-danger" href="{% url 'logout_user' %}">Logout</a>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            {% if request.user.user_type == 'HOD' or request.user.is_superuser %}
+                <a class="sidebar-link" href="{% url 'hod_dashboard' %}">Dashboard</a>
+                <a class="sidebar-link" href="{% url 'list_staff' %}">Staff</a>
+                <a class="sidebar-link" href="{% url 'hod_list_students' %}">Students</a>
+                <a class="sidebar-link" href="{% url 'hod_list_courses' %}">Courses</a>
+                <a class="sidebar-link" href="{% url 'hod_list_sessions' %}">Sessions</a>
+                <a class="sidebar-link" href="{% url 'hod_list_subjects' %}">Subjects</a>
+                <a class="sidebar-link" href="{% url 'admin_view_attendance' %}">Attendance</a>
+                <a class="sidebar-link" href="{% url 'admin_student_leave_view' %}">Leave</a>
+                <a class="sidebar-link" href="{% url 'hod_student_feedback_list' %}">Feedback</a>
+            {% elif request.user.user_type == 'STAFF' %}
+                <a class="sidebar-link" href="{% url 'staff_dashboard' %}">Dashboard</a>
+                <a class="sidebar-link" href="{% url 'staff_profile' %}">Profile</a>
+                <a class="sidebar-link" href="{% url 'staff_take_attendance' %}">Attendance</a>
+                <a class="sidebar-link" href="{% url 'staff_apply_leave' %}">Leave</a>
+                <a class="sidebar-link" href="{% url 'staff_feedback' %}">Feedback</a>
+            {% elif request.user.user_type == 'STUDENT' %}
+                <a class="sidebar-link" href="{% url 'student_dashboard' %}">Dashboard</a>
+                <a class="sidebar-link" href="{% url 'student_profile' %}">Profile</a>
+                <a class="sidebar-link" href="{% url 'student_view_attendance' %}">Attendance</a>
+                <a class="sidebar-link" href="{% url 'student_apply_leave' %}">Leave</a>
+                <a class="sidebar-link" href="{% url 'student_feedback' %}">Feedback</a>
+            {% endif %}
+        </nav>
+    </aside>
+    {% endif %}
+
+    <main class="{% if request.user.is_authenticated %}main-content{% else %}auth-wrapper{% endif %} fade-in">
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% elif message.tags == 'warning' %}alert-warning{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        (function initMenuToggle() {
+            const menuBtn = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+            if (menuBtn && sidebar) {
+                const updateMenuLabel = () => {
+                    const mobileOpen = isMobile() && sidebar.classList.contains('open');
+                    const desktopOpen = !isMobile() && !sidebar.classList.contains('collapsed');
+                    const isOpen = mobileOpen || desktopOpen;
+                    menuBtn.textContent = isOpen ? 'Close' : 'Menu';
+                    menuBtn.setAttribute('aria-expanded', String(isOpen));
+                };
+
+                menuBtn.onclick = function (event) {
+                    event.preventDefault();
+
+                    if (isMobile()) {
+                        const isOpen = sidebar.classList.toggle('open');
+                        document.body.classList.toggle('sidebar-open', isOpen);
+                        updateMenuLabel();
+                        return;
+                    }
+
+                    const isCollapsed = sidebar.classList.toggle('collapsed');
+                    document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+                    updateMenuLabel();
+                };
+
+                sidebar.querySelectorAll('a').forEach((link) => {
+                    link.addEventListener('click', () => {
+                        if (!isMobile()) {
+                            return;
+                        }
+                        sidebar.classList.remove('open');
+                        document.body.classList.remove('sidebar-open');
+                        updateMenuLabel();
+                    });
+                });
+
+                window.addEventListener('resize', () => {
+                    if (isMobile()) {
+                        document.body.classList.remove('sidebar-collapsed');
+                        sidebar.classList.remove('collapsed');
+                    } else {
+                        document.body.classList.remove('sidebar-open');
+                        sidebar.classList.remove('open');
+                    }
+                    updateMenuLabel();
+                });
+
+                updateMenuLabel();
+            }
+
+            document.querySelectorAll('.btn').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    const rect = btn.getBoundingClientRect();
+                    ripple.style.left = `${e.clientX - rect.left}px`;
+                    ripple.style.top = `${e.clientY - rect.top}px`;
+                    btn.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 450);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

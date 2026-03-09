@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Course List{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Course Management</h2><p>Manage all courses.</p></div>
+<div class="card table-wrap">
+    <p><a class="btn btn-primary" href="{% url 'hod_add_course' %}">Add New Course</a></p>
+    <table class="erp-table">
+        <thead>
+            <tr><th>ID</th><th>Course Name</th><th>Created</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
+                <td>{{ course.id }}</td>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.created_at|date:"d-M-Y" }}</td>
+                <td>
+                    <a class="btn btn-success" href="{% url 'hod_edit_course' course.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'hod_delete_course' course.id %}" onclick="return confirm('Delete this course?');">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">No courses found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

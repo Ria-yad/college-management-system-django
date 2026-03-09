@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Edit Staff{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Edit Staff</h2><p>Update staff details for {{ staff.user.username }}.</p></div>
+<div class="card">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">{{ field.label_tag }}{{ field }}</div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Update Staff</button>
+    </form>
+</div>
+{% endblock %}

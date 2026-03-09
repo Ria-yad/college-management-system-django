@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Student Dashboard</h2>
+    <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}. Track your academic progress.</p>
+</div>
+<div class="stat-grid">
+    <div class="stat-card"><h3>Total Students</h3><p>{{ total_students|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Staff</h3><p>{{ total_staff|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Courses</h3><p>{{ total_courses|default:0 }}</p></div>
+    <div class="stat-card"><h3>Total Attendance</h3><p>{{ total_attendance|default:0 }}</p></div>
+</div>
+<div class="card">
+    <h3>Quick Actions</h3>
+    <p>
+        <a class="btn btn-primary" href="{% url 'student_profile' %}">My Profile</a>
+        <a class="btn btn-success" href="{% url 'student_view_attendance' %}">My Attendance</a>
+        <a class="btn btn-primary" href="{% url 'student_apply_leave' %}">Apply Leave</a>
+        <a class="btn btn-primary" href="{% url 'student_leave_view' %}">Leave Status</a>
+        <a class="btn btn-primary" href="{% url 'student_feedback' %}">Feedback</a>
+    </p>
+</div>
+{% endblock %}

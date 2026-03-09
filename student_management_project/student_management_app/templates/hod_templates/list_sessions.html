@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Session List{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Session Management</h2><p>Manage academic sessions/batches.</p></div>
+<div class="card table-wrap">
+    <p><a class="btn btn-primary" href="{% url 'hod_add_session' %}">Add New Session</a></p>
+    <table class="erp-table">
+        <thead>
+            <tr><th>ID</th><th>Session Years</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for session in sessions %}
+            <tr>
+                <td>{{ session.id }}</td>
+                <td>{{ session.session_start_year }} to {{ session.session_end_year }}</td>
+                <td>
+                    <a class="btn btn-success" href="{% url 'hod_edit_session' session.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'hod_delete_session' session.id %}" onclick="return confirm('Delete this session?');">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="3">No sessions found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

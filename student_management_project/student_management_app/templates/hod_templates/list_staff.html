@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Staff List{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Staff Management</h2><p>Manage all staff records.</p></div>
+<div class="card table-wrap">
+    <p><a class="btn btn-primary" href="{% url 'add_staff' %}">Add New Staff</a></p>
+    <table class="erp-table">
+        <thead>
+            <tr><th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Gender</th><th>Address</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for staff in staff_list %}
+            <tr>
+                <td>{{ staff.id }}</td>
+                <td>{{ staff.user.username }}</td>
+                <td>{{ staff.user.first_name }} {{ staff.user.last_name }}</td>
+                <td>{{ staff.user.email }}</td>
+                <td>{{ staff.gender }}</td>
+                <td>{{ staff.address }}</td>
+                <td>
+                    <a class="btn btn-success" href="{% url 'edit_staff' staff.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'delete_staff' staff.id %}" onclick="return confirm('Delete this staff member?');">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7">No staff records found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

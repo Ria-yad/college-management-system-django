@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Staff Apply Leave{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Apply Leave</h2><p>Submit a leave request.</p></div>
+{% if messages %}{% for message in messages %}<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">{{ message }}</div>{% endfor %}{% endif %}
+<div class="card">
+<form method="post" class="form-grid">
+{% csrf_token %}
+<div class="form-group"><label for="leave_date">Leave Date</label><input id="leave_date" type="date" name="leave_date" required></div>
+<div class="form-group"><label for="leave_message">Leave Message</label><textarea id="leave_message" name="leave_message" rows="4" required></textarea></div>
+<button class="btn btn-primary" type="submit">Submit Request</button>
+</form>
+</div>
+{% endblock %}

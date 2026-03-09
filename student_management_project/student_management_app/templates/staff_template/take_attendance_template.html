@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Take Attendance{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Take Attendance</h2><p>Select class details and mark student attendance.</p></div>
+<div class="card">
+<div class="form-grid" style="grid-template-columns:repeat(4,minmax(140px,1fr));">
+<div class="form-group"><label for="subject">Subject</label><select id="subject"><option value="">Select Subject</option>{% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.subject_name }} ({{ subject.course_id.course_name }})</option>{% endfor %}</select></div>
+<div class="form-group"><label for="session_year">Session</label><select id="session_year"><option value="">Select Session</option>{% for session in session_years %}<option value="{{ session.id }}">{{ session.session_start_year }} To {{ session.session_end_year }}</option>{% endfor %}</select></div>
+<div class="form-group"><label for="attendance_date">Date</label><input type="date" id="attendance_date"></div>
+<div class="form-group" style="align-self:end;"><button type="button" class="btn btn-primary" id="fetch_students_btn">Fetch Students</button></div>
+</div>
+</div>
+<div class="card table-wrap" id="students_section"></div>
+<button type="button" class="btn btn-success" id="save_attendance_btn" style="display:none;">Save Attendance</button>
+<script>
+function getCsrfToken(){const name='csrftoken=';for(const p of document.cookie.split(';')){const c=p.trim();if(c.startsWith(name)) return c.substring(name.length);}return '';}
+const fetchBtn=document.getElementById('fetch_students_btn');const saveBtn=document.getElementById('save_attendance_btn');const studentsSection=document.getElementById('students_section');
+fetchBtn.addEventListener('click', async()=>{const subject=document.getElementById('subject').value;const sessionYear=document.getElementById('session_year').value;const attendanceDate=document.getElementById('attendance_date').value;if(!subject||!sessionYear||!attendanceDate){alert('Please select subject, session and date.');return;}const body=new URLSearchParams();body.append('subject',subject);body.append('session_year',sessionYear);const response=await fetch("{% url 'get_students_ajax' %}",{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':getCsrfToken()},body:body.toString()});const data=await response.json();if(data.status!=='success'){alert(data.message||'Failed to fetch students.');return;}if(!data.students.length){studentsSection.innerHTML='<p>No students found.</p>';saveBtn.style.display='none';return;}let html='<table class="erp-table"><tr><th>Name</th><th>Present</th></tr>';data.students.forEach((s)=>{html+=`<tr><td>${s.name} (${s.username})</td><td><input type="checkbox" class="attendance-status" data-student-id="${s.id}" checked></td></tr>`;});html+='</table>';studentsSection.innerHTML=html;saveBtn.style.display='inline-flex';});
+saveBtn.addEventListener('click', async()=>{const students=Array.from(document.querySelectorAll('.attendance-status')).map((c)=>({id:c.dataset.studentId,status:c.checked}));const response=await fetch("{% url 'save_attendance_data_ajax' %}",{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrfToken()},body:JSON.stringify({subject_id:document.getElementById('subject').value,session_year_id:document.getElementById('session_year').value,attendance_date:document.getElementById('attendance_date').value,students:students})});const data=await response.json();alert(data.message||'Saved.');});
+</script>
+{% endblock %}

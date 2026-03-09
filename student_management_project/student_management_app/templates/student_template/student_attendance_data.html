@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Data{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Attendance Data</h2><p>{{ subject.subject_name }} | {{ start_date }} to {{ end_date }}</p></div>
+<div class="stat-grid">
+    <div class="stat-card"><h3>Total Classes</h3><p>{{ total_classes }}</p></div>
+    <div class="stat-card"><h3>Present</h3><p>{{ total_present }}</p></div>
+    <div class="stat-card"><h3>Absent</h3><p>{{ total_absent }}</p></div>
+    <div class="stat-card"><h3>Attendance %</h3><p>{% if total_classes %}{% widthratio total_present total_classes 100 %}%{% else %}0%{% endif %}</p></div>
+</div>
+<div class="card table-wrap">
+<table class="erp-table"><tr><th>Date</th><th>Status</th></tr>
+{% for row in reports %}<tr><td>{{ row.attendance_id.attendance_date }}</td><td>{% if row.status %}<span class="badge badge-approved">Present</span>{% else %}<span class="badge badge-rejected">Absent</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="2">No attendance records found.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

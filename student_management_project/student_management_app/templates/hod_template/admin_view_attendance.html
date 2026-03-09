@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}HOD Attendance View{% endblock %}
+{% block content %}
+<div class="page-header"><h2>Attendance Explorer</h2><p>Review attendance by subject, session, and date.</p></div>
+<div class="card">
+<div class="form-grid" style="grid-template-columns:repeat(3,minmax(140px,1fr));">
+<div class="form-group"><label for="subject">Subject</label><select id="subject"><option value="">Select Subject</option>{% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.subject_name }} ({{ subject.course_id.course_name }})</option>{% endfor %}</select></div>
+<div class="form-group"><label for="session_year">Session</label><select id="session_year"><option value="">Select Session</option>{% for session in session_years %}<option value="{{ session.id }}">{{ session.session_start_year }} To {{ session.session_end_year }}</option>{% endfor %}</select></div>
+<div class="form-group" style="align-self:end;"><button type="button" class="btn btn-primary" id="fetch_dates_btn">Fetch Dates</button></div>
+</div>
+<div class="form-grid" style="grid-template-columns:2fr 1fr; margin-top:10px;">
+<div class="form-group"><label for="attendance_date_id">Attendance Date</label><select id="attendance_date_id"><option value="">Select Date</option></select></div>
+<div class="form-group" style="align-self:end;"><button type="button" class="btn btn-primary" id="fetch_students_btn">Fetch Students</button></div>
+</div>
+</div>
+<div class="card table-wrap" id="students_section"></div>
+<script>
+function getCsrfToken(){const name='csrftoken=';for(const p of document.cookie.split(';')){const c=p.trim();if(c.startsWith(name))return c.substring(name.length);}return '';}const dateSelect=document.getElementById('attendance_date_id');const studentsSection=document.getElementById('students_section');
+document.getElementById('fetch_dates_btn').addEventListener('click', async()=>{const body=new URLSearchParams();body.append('subject',document.getElementById('subject').value);body.append('session_year',document.getElementById('session_year').value);const res=await fetch("{% url 'admin_get_attendance_dates_ajax' %}",{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':getCsrfToken()},body:body.toString()});const data=await res.json();dateSelect.innerHTML='<option value="">Select Date</option>';if(data.status!=='success'){alert(data.message||'Failed');return;}data.dates.forEach((d)=>{const o=document.createElement('option');o.value=d.id;o.textContent=d.attendance_date;dateSelect.appendChild(o);});});
+document.getElementById('fetch_students_btn').addEventListener('click', async()=>{const body=new URLSearchParams();body.append('attendance_id',dateSelect.value);const res=await fetch("{% url 'admin_get_attendance_student_ajax' %}",{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':getCsrfToken()},body:body.toString()});const data=await res.json();if(data.status!=='success'){alert(data.message||'Failed');return;}let html='<table class="erp-table"><tr><th>Name</th><th>Username</th><th>Status</th></tr>';data.students.forEach((s)=>{html+=`<tr><td>${s.name}</td><td>${s.username}</td><td>${s.status?'<span class="badge badge-approved">Present</span>':'<span class="badge badge-rejected">Absent</span>'}</td></tr>`;});html+='</table>';studentsSection.innerHTML=html;});
+</script>
+{% endblock %}
